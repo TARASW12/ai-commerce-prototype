@@ -1,10 +1,16 @@
 import { notFound } from "next/navigation";
 import { profile, getProgram } from "@/lib/profile";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 import { ProgramView } from "@/components/program-view";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+/** Prerender every program so crawlers get a cached, instantly served page. */
+export function generateStaticParams() {
+  return profile.programs.map((p) => ({ id: p.id }));
+}
+
 
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
   const p = getProgram(params.id);
@@ -26,7 +32,7 @@ export default function ProgramPage({ params }: { params: { id: string } }) {
           ← all programs
         </a>
       </p>
-      <ProgramView profile={profile} program={program} origin={requestOrigin()} />
+      <ProgramView profile={profile} program={program} origin={siteOrigin()} />
     </main>
   );
 }

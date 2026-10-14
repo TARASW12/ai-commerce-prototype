@@ -1,9 +1,15 @@
 import { profile } from "@/lib/profile";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 import { checkAvailability } from "@/lib/availability";
 import { utcHHMM, days } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+/** Prerender every program so crawlers get a cached, instantly served page. */
+export function generateStaticParams() {
+  return profile.programs.map((p) => ({ id: p.id }));
+}
+
 
 /**
  * One program as markdown.
@@ -19,7 +25,7 @@ export async function GET(
   const p = profile.programs.find((x) => x.id === params.id);
   if (!p) return new Response("Not found", { status: 404 });
 
-  const origin = requestOrigin();
+  const origin = siteOrigin();
   const a = checkAvailability(p);
 
   const body = `# ${p.name}

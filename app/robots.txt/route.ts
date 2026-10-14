@@ -1,6 +1,6 @@
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 /**
  * The discovery layer is useless if crawlers are not told it exists.
@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
  * assistants this business has opted into.
  */
 export async function GET() {
-  const origin = requestOrigin();
+  const origin = siteOrigin();
   const body = `# Structured product data for AI assistants.
 # Facts live in schema.org JSON-LD on / , in /llms.txt and in /api/feed.
 

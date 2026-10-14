@@ -1,6 +1,6 @@
 import { profile, getProgram, searchPrograms, enrolUrl } from "@/lib/profile";
 import { checkAvailability } from "@/lib/availability";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 import type { Program } from "@/adapters/types";
 
 export const dynamic = "force-dynamic";
@@ -254,7 +254,7 @@ function handle(req: JsonRpcRequest, origin: string) {
 }
 
 export async function POST(request: Request) {
-  const origin = requestOrigin();
+  const origin = siteOrigin();
   let body: JsonRpcRequest | JsonRpcRequest[];
   try {
     body = await request.json();

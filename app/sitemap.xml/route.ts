@@ -1,10 +1,10 @@
 import { profile } from "@/lib/profile";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export async function GET() {
-  const origin = requestOrigin();
+  const origin = siteOrigin();
   const lastmod = profile.source.fetchedAt.slice(0, 10);
 
   const paths = [

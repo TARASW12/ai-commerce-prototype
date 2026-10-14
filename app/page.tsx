@@ -1,9 +1,13 @@
 import { profile, FEATURED_ID } from "@/lib/profile";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 import { checkAvailability } from "@/lib/availability";
 import { utcHHMM, days } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+// Cacheable for crawlers, refreshed hourly. Sessions are weekly, so an
+// hour-old render is never wrong — and a public cache-control header makes
+// the page far more likely to be fetched and kept by an AI crawler than the
+// `no-store` that force-dynamic emits.
+export const revalidate = 3600;
 
 /**
  * The catalog.
@@ -16,7 +20,7 @@ export const dynamic = "force-dynamic";
  * facts — lives at /programs/<id>.
  */
 export default function Catalog() {
-  const origin = requestOrigin();
+  const origin = siteOrigin();
 
   const itemList = {
     "@context": "https://schema.org",

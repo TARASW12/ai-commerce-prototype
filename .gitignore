@@ -7,3 +7,4 @@ next-env.d.ts
 evidence/*/*.png
 evidence/*/*.mov
 evidence/*/*.mp4
+.vercel

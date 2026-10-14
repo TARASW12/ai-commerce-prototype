@@ -151,6 +151,7 @@ seven separate sessions. The schedule is stored once, and localised on output.
 | `app/api/mcp/route.ts` | MCP server (JSON-RPC, Streamable HTTP) |
 | `app/enroll/route.ts` | Action endpoint → Stripe, with AI attribution |
 | `scripts/eval.ts` | Before/after measurement |
+| `scripts/indexnow.ts` | Submits every URL to IndexNow on deploy |
 
 Zero runtime dependencies beyond Next and React. The MCP server is written
 against the protocol directly — it is a small, stable JSON-RPC surface, and
@@ -238,6 +239,30 @@ already outranks an unmarked page for its own product — and it is exactly why
 Both passes of the measurement therefore pin the source explicitly
 (`Use only <url> as your source`), so the comparison isolates the one variable
 that this work actually changes: the form the facts are in.
+
+### Indexing is the other half of the problem
+
+Pinning the source works for the merchant's page because Perplexity already has
+it indexed. It does **not** work for a domain deployed an hour ago: the engine
+reports that it could not load the URL and silently falls back to search. The
+page is not unreachable — an external fetcher retrieves it in full — Perplexity
+simply does not crawl arbitrary unknown hosts on demand.
+
+The third-party prototype has no such problem because it has been live since
+2026-10-05. Nine days of crawl time is the entire difference between the two.
+
+Two things follow for this prototype, and both are implemented:
+
+- pages are prerendered and served with a public, revalidating cache header
+  rather than the `no-store` that request-time rendering produces, because a
+  product page that cannot be cached is one a crawler is far less likely to keep;
+- `npm run indexnow` submits every URL to IndexNow (Bing, Yandex, Seznam,
+  Naver), which turns discovery from days into hours for the engines that
+  accept it.
+
+Neither reaches Perplexity's own crawler, which is the honest limit here. The
+real answer is §8: in production this markup belongs on the merchant's own
+already-indexed domain, not beside it.
 
 ## 7. Reuse: what a second business costs
 

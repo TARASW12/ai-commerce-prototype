@@ -1,9 +1,9 @@
 import { profile, FEATURED_ID } from "@/lib/profile";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 import { checkAvailability } from "@/lib/availability";
 import { utcHHMM, days } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 /**
  * /llms.txt — the emerging convention for handing a language model a clean
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
  * never drift out of sync with them.
  */
 export async function GET() {
-  const origin = requestOrigin();
+  const origin = siteOrigin();
 
   const programLines = profile.programs
     .map((p) => {

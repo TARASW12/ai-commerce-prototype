@@ -1,8 +1,8 @@
 import { profile } from "@/lib/profile";
-import { requestOrigin } from "@/lib/origin";
+import { siteOrigin } from "@/lib/origin";
 import { checkAvailability } from "@/lib/availability";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 /**
  * The normalized record itself, plus freshly computed availability.
@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
  * the same data the page and the MCP tools serve, without the presentation.
  */
 export async function GET() {
-  const origin = requestOrigin();
+  const origin = siteOrigin();
   return Response.json(
     {
       ...profile,
