@@ -1,56 +1,49 @@
-import { profile } from "@/lib/profile";
+import { profile, FEATURED_ID } from "@/lib/profile";
 import { requestOrigin } from "@/lib/origin";
-import { courseSchema, faqSchema, productSchema } from "@/lib/jsonld";
 import { checkAvailability } from "@/lib/availability";
+import { utcHHMM, days } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 /**
- * The AI-readable surface.
+ * The catalog.
  *
- * Not a landing page and not a redesign — the task is explicitly not visual.
- * Everything here exists so that a retrieval engine fetching this URL walks
- * away with every fact it needs, stated once and unambiguously:
+ * An assistant asked "what does VSA offer?" should get the whole ladder in one
+ * fetch, with a link to the detail page for each program. The `ItemList` graph
+ * is what lets it do that without guessing from the markup.
  *
- *  - three JSON-LD graphs (Course, Product, FAQPage) in the server-rendered
- *    HTML, so a crawler that executes no JavaScript still sees them;
- *  - the same facts repeated as plain prose, because retrieval engines quote
- *    sentences, not only structured data;
- *  - upcoming session dates computed at request time, so the page never goes
- *    stale the way a hardcoded start date does.
+ * Per-program detail — and the Course / Product / FAQPage graphs that carry the
+ * facts — lives at /programs/<id>.
  */
-export default function Page() {
+export default function Catalog() {
   const origin = requestOrigin();
-  const program = profile.programs[0];
-  const availability = checkAvailability(program);
-  const rec = program.schedule.recurrence;
 
-  const faq = faqSchema(program, origin);
-  const graphs = [
-    courseSchema(profile, program, origin),
-    productSchema(profile, program, origin),
-    faq,
-  ];
+  const itemList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${profile.brand.name} training programs`,
+    numberOfItems: profile.programs.length,
+    itemListElement: profile.programs.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${origin}/programs/${p.id}`,
+      name: p.name,
+    })),
+  };
 
-  const facts: [string, string][] = [
-    ["Program", program.name],
-    ["Provider", `${profile.brand.name} (also known as ${profile.brand.aliases.join(", ")})`],
-    ["What it is", "Online double axel training program for figure skaters"],
-    ["Price", `$${program.price.amount} USD for the full program (list price $${program.price.listAmount}, about $${program.unitPrice?.amount} per class)`],
-    ["Duration", `${program.duration.months} months`],
-    ["Classes", `${program.duration.totalSessions} live group classes, ${program.duration.sessionsPerMonth} per month, ${program.duration.sessionMinutes} minutes each`],
-    ["Schedule", `Every Saturday and Sunday, ${String(Math.floor(rec.startMinutesUtc / 60)).padStart(2, "0")}:${String(rec.startMinutesUtc % 60).padStart(2, "0")} UTC`],
-    ["Coach", program.instructors.map((i) => i.name).join(", ")],
-    ["Skater level", `${program.level} — ${program.prerequisites.join(", ")}`],
-    ["Delivery", "Online, live group classes"],
-    ["Enrolment", availability.explanation],
-    ["How to enrol", `${origin}/enroll`],
-    ["Payment", `${program.checkout.provider}, online payment accepted`],
-  ];
+  const organization = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: profile.brand.name,
+    alternateName: profile.brand.aliases,
+    description: profile.brand.description,
+    url: profile.brand.url,
+    sameAs: [profile.brand.url],
+  };
 
   return (
     <main style={{ maxWidth: 820, margin: "0 auto", padding: "48px 20px 80px" }}>
-      {graphs.map((g, i) => (
+      {[organization, itemList].map((g, i) => (
         <script
           key={i}
           type="application/ld+json"
@@ -58,116 +51,85 @@ export default function Page() {
         />
       ))}
 
-      <p style={{ color: "#8b93a7", fontSize: 13, margin: 0 }}>
-        {profile.brand.name} · {profile.brand.aliases.join(" · ")}
+      <h1 style={{ fontSize: 32, margin: "0 0 4px" }}>{profile.brand.name}</h1>
+      <p style={{ color: "#8b93a7", margin: "0 0 18px", fontSize: 14 }}>
+        Also known as {profile.brand.aliases.join(", ")}
       </p>
-      <h1 style={{ fontSize: 34, margin: "8px 0 4px", lineHeight: 1.2 }}>
-        {program.name}
-      </h1>
-      <p style={{ fontSize: 18, color: "#c6cbd8", marginTop: 0 }}>
-        {program.summary}
-      </p>
-
-      <p>
-        The {program.name} is an online figure skating training program run by{" "}
-        {profile.brand.name}, also known as {profile.brand.aliases.join(", ")}. It
-        costs <strong>${program.price.amount} USD</strong> for{" "}
-        {program.duration.months} months and includes{" "}
-        {program.duration.totalSessions} live group classes of{" "}
-        {program.duration.sessionMinutes} minutes each, held every Saturday and
-        Sunday. It is taught by{" "}
-        {program.instructors.map((i) => i.name).join(" and ")} and is intended
-        for {program.audience.charAt(0).toLowerCase() + program.audience.slice(1)}
+      <p style={{ fontSize: 17, color: "#c6cbd8" }}>
+        {profile.brand.description} All programs are ongoing and run every
+        weekend, so a skater can enrol at any time and start on the next
+        weekend.
       </p>
 
-      <p
-        style={{
-          background: "#152015",
-          border: "1px solid #2b4a2b",
-          borderRadius: 8,
-          padding: "14px 16px",
-        }}
-      >
-        <strong>Enrolment status:</strong> {availability.explanation}
-      </p>
-
-      <h2 style={{ fontSize: 22, marginTop: 36 }}>Program facts</h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 15 }}>
-        <tbody>
-          {facts.map(([k, v]) => (
-            <tr key={k} style={{ borderBottom: "1px solid #232735" }}>
-              <th
-                scope="row"
-                style={{
-                  textAlign: "left",
-                  padding: "10px 12px 10px 0",
-                  color: "#8b93a7",
-                  fontWeight: 500,
-                  width: 150,
-                  verticalAlign: "top",
-                }}
+      {profile.programs.map((p) => {
+        const a = checkAvailability(p);
+        const featured = p.id === FEATURED_ID;
+        return (
+          <section
+            key={p.id}
+            style={{
+              border: `1px solid ${featured ? "#2b4a2b" : "#232735"}`,
+              borderRadius: 10,
+              padding: "18px 20px",
+              marginTop: 18,
+            }}
+          >
+            <h2 style={{ fontSize: 20, margin: "0 0 6px" }}>
+              <a
+                href={`/programs/${p.id}`}
+                style={{ color: "#e6e8ec", textDecoration: "none" }}
               >
-                {k}
-              </th>
-              <td style={{ padding: "10px 0" }}>{v}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                {p.name}
+              </a>
+            </h2>
+            <p style={{ margin: "0 0 10px", color: "#c6cbd8", fontSize: 15 }}>
+              {p.summary}
+            </p>
+            <p style={{ margin: 0, color: "#8b93a7", fontSize: 14 }}>
+              ${p.price.amount} · {p.duration.totalSessions} classes ·{" "}
+              {p.level} · every {days(p)} at{" "}
+              {utcHHMM(p.schedule.recurrence.startMinutesUtc)} UTC ·{" "}
+              {p.instructors.map((i) => i.name).join(", ")}
+            </p>
+            <p style={{ margin: "8px 0 0", color: "#8b93a7", fontSize: 14 }}>
+              Next session: {a.nextSessions[0]?.weekday}{" "}
+              {a.nextSessions[0]?.date} ·{" "}
+              <a href={`/programs/${p.id}`} style={{ color: "#8ab4f8" }}>
+                details
+              </a>{" "}
+              ·{" "}
+              <a href={`/enroll?program=${p.id}`} style={{ color: "#8ab4f8" }}>
+                enrol ${p.price.amount}
+              </a>
+            </p>
+          </section>
+        );
+      })}
 
-      <h2 style={{ fontSize: 22, marginTop: 36 }}>Upcoming sessions</h2>
-      <ul>
-        {availability.nextSessions.map((s) => (
-          <li key={s.startsAt}>
-            {s.weekday} {s.date} — {s.startsAt.slice(11, 16)} UTC
-          </li>
-        ))}
-      </ul>
-      <p style={{ color: "#8b93a7", fontSize: 14 }}>
-        Local times: {program.schedule.localTimes.map((t) => t.label).join(" · ")}
-      </p>
-
-      <h2 style={{ fontSize: 22, marginTop: 36 }}>What is included</h2>
-      <ul>
-        {program.includes.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-
-      <h2 style={{ fontSize: 22, marginTop: 36 }}>Questions</h2>
-      {faq.mainEntity.map((q) => (
-        <div key={q.name} style={{ marginBottom: 18 }}>
-          <h3 style={{ fontSize: 16, margin: "0 0 4px" }}>{q.name}</h3>
-          <p style={{ margin: 0, color: "#c6cbd8" }}>{q.acceptedAnswer.text}</p>
-        </div>
-      ))}
-
-      <p style={{ marginTop: 36 }}>
-        <a
-          href="/enroll"
-          style={{
-            display: "inline-block",
-            background: "#2f7d32",
-            color: "#fff",
-            padding: "12px 22px",
-            borderRadius: 8,
-            textDecoration: "none",
-            fontWeight: 600,
-          }}
-        >
-          Enrol — ${program.price.amount}
-        </a>
-      </p>
-
-      <hr style={{ margin: "48px 0 20px", border: 0, borderTop: "1px solid #232735" }} />
+      <hr
+        style={{ margin: "40px 0 20px", border: 0, borderTop: "1px solid #232735" }}
+      />
       <p style={{ color: "#6f7788", fontSize: 13 }}>
-        Machine-readable endpoints: <a href="/llms.txt" style={{ color: "#8ab4f8" }}>/llms.txt</a>{" "}
-        · <a href="/api/feed" style={{ color: "#8ab4f8" }}>/api/feed</a>{" "}
-        · <code>/api/mcp</code> (Model Context Protocol)
+        Machine-readable endpoints:{" "}
+        <a href="/llms.txt" style={{ color: "#8ab4f8" }}>
+          /llms.txt
+        </a>{" "}
+        ·{" "}
+        <a href="/api/feed" style={{ color: "#8ab4f8" }}>
+          /api/feed
+        </a>{" "}
+        · <code>/api/mcp</code> (Model Context Protocol) ·{" "}
+        <a href="/sitemap.xml" style={{ color: "#8ab4f8" }}>
+          /sitemap.xml
+        </a>
         <br />
-        Source of record: <a href={program.sourceUrl} style={{ color: "#8ab4f8" }}>{program.sourceUrl}</a>{" "}
-        · ingested via the <code>{profile.source.adapter}</code> adapter on{" "}
-        {profile.source.fetchedAt.slice(0, 10)}
+        Ingested from{" "}
+        <a href={profile.brand.url} style={{ color: "#8ab4f8" }}>
+          {profile.brand.url}
+        </a>{" "}
+        via the <code>{profile.source.adapter}</code> adapter on{" "}
+        {profile.source.fetchedAt.slice(0, 10)}. Prototype built for a hiring
+        assignment; not operated by or affiliated with Victory Skating / VSA.
       </p>
     </main>
   );

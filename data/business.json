@@ -2,7 +2,7 @@
   "source": {
     "adapter": "tilda-victoryskating",
     "platform": "tilda",
-    "fetchedAt": "2026-10-14T18:53:56.068Z",
+    "fetchedAt": "2026-10-14T19:15:05.355Z",
     "sourceUrl": "https://victoryskating.com/doubleaxel"
   },
   "brand": {
@@ -13,15 +13,214 @@
       "Victory Skating",
       "Victory Skating Academy"
     ],
-    "description": "Online figure skating academy running live group training programs for skaters worldwide.",
+    "description": "Online figure skating academy running live group training programs for skaters worldwide, from the single axel through to triple jumps.",
     "url": "https://victoryskating.com"
   },
   "programs": [
     {
+      "id": "axel-club-6m",
+      "name": "Axel Club",
+      "summary": "Online 6-month single axel (1A) training by Victory Skating Academy (VSA). 48 live group classes, 2 every weekend (Saturday and Sunday), $299 for the whole program.",
+      "description": "A 6-month online group program from Victory Skating Academy. Skaters landing single jumps who are working toward their first axel. Live coaching every weekend covers technique, rotational speed, power and explosiveness, with structured progression across the full 6 months.",
+      "category": "Figure skating training",
+      "price": {
+        "amount": 299,
+        "currency": "USD",
+        "listAmount": 699
+      },
+      "unitPrice": {
+        "amount": 6,
+        "currency": "USD"
+      },
+      "duration": {
+        "months": 6,
+        "totalSessions": 48,
+        "sessionMinutes": 45,
+        "sessionsPerMonth": 8
+      },
+      "schedule": {
+        "recurrence": {
+          "freq": "WEEKLY",
+          "byDay": [
+            "SA",
+            "SU"
+          ],
+          "startMinutesUtc": 840,
+          "durationMinutes": 45,
+          "rollingEnrolment": true
+        },
+        "localTimes": [
+          {
+            "region": "PDT",
+            "timezone": "PDT",
+            "label": "7 - 7.45 am PDT"
+          },
+          {
+            "region": "MDT",
+            "timezone": "MDT",
+            "label": "8 - 8.45 am MDT"
+          },
+          {
+            "region": "CDT",
+            "timezone": "CDT",
+            "label": "9 - 9.45 am CDT"
+          },
+          {
+            "region": "EDT",
+            "timezone": "EDT",
+            "label": "10 - 10.45 am EDT"
+          },
+          {
+            "region": "UK",
+            "timezone": "UK",
+            "label": "3 - 3.45 pm UK"
+          },
+          {
+            "region": "CEST",
+            "timezone": "CEST",
+            "label": "4 - 4.45 pm CEST"
+          },
+          {
+            "region": "ICT",
+            "timezone": "ICT",
+            "label": "9 - 9.45 PM (ICT)"
+          }
+        ]
+      },
+      "instructors": [
+        {
+          "name": "Coach Diana",
+          "privateRate": {
+            "amount": 110,
+            "currency": "USD"
+          }
+        }
+      ],
+      "audience": "Skaters landing single jumps who are working toward their first axel.",
+      "level": "beginner",
+      "prerequisites": [
+        "Confident single jumps"
+      ],
+      "includes": [
+        "48 live group classes over 6 months",
+        "2 classes every weekend at 14:00 UTC",
+        "Free 4-day workbook",
+        "Discount on private classes",
+        "2 free guest passes for group classes"
+      ],
+      "deliveryMode": "online",
+      "language": [
+        "en"
+      ],
+      "checkout": {
+        "provider": "stripe",
+        "url": "https://buy.stripe.com/4gM5kD0Q30OE9lw10rdMM1C",
+        "acceptsOnlinePayment": true
+      },
+      "sourceUrl": "https://victoryskating.com/axel"
+    },
+    {
+      "id": "double-jumps-club-6m",
+      "name": "6-Month Double Jumps Club",
+      "summary": "Online 6-month double jumps (2S, 2T, 2Lo, 2F, 2Lz) training by Victory Skating Academy (VSA). 48 live group classes, 2 every weekend (Saturday and Sunday), $299 for the whole program.",
+      "description": "A 6-month online group program from Victory Skating Academy. Skaters who have landed their axel and are moving on to double jumps. Live coaching every weekend covers technique, rotational speed, power and explosiveness, with structured progression across the full 6 months.",
+      "category": "Figure skating training",
+      "price": {
+        "amount": 299,
+        "currency": "USD",
+        "listAmount": 699
+      },
+      "unitPrice": {
+        "amount": 6,
+        "currency": "USD"
+      },
+      "duration": {
+        "months": 6,
+        "totalSessions": 48,
+        "sessionMinutes": 45,
+        "sessionsPerMonth": 8
+      },
+      "schedule": {
+        "recurrence": {
+          "freq": "WEEKLY",
+          "byDay": [
+            "SA",
+            "SU"
+          ],
+          "startMinutesUtc": 900,
+          "durationMinutes": 45,
+          "firstCohortDate": "2026-10-17",
+          "rollingEnrolment": true
+        },
+        "localTimes": [
+          {
+            "region": "PDT",
+            "timezone": "PDT",
+            "label": "8 - 8.45 am PDT"
+          },
+          {
+            "region": "MDT",
+            "timezone": "MDT",
+            "label": "9 - 9.45 am MDT"
+          },
+          {
+            "region": "CDT",
+            "timezone": "CDT",
+            "label": "10 - 10.45 am CDT"
+          },
+          {
+            "region": "EDT",
+            "timezone": "EDT",
+            "label": "11 - 11.45 am EDT"
+          },
+          {
+            "region": "UK",
+            "timezone": "UK",
+            "label": "4 - 4.45 pm UK"
+          },
+          {
+            "region": "CEST",
+            "timezone": "CEST",
+            "label": "5 - 5.45 pm CEST"
+          }
+        ]
+      },
+      "instructors": [
+        {
+          "name": "Coach Diana"
+        },
+        {
+          "name": "Coach Marta"
+        }
+      ],
+      "audience": "Skaters who have landed their axel and are moving on to double jumps.",
+      "level": "intermediate",
+      "prerequisites": [
+        "A landed axel"
+      ],
+      "includes": [
+        "48 live group classes over 6 months",
+        "2 classes every weekend at 15:00 UTC",
+        "Free 4-day workbook",
+        "Discount on private classes",
+        "2 free guest passes for group classes"
+      ],
+      "deliveryMode": "online",
+      "language": [
+        "en"
+      ],
+      "checkout": {
+        "provider": "stripe",
+        "url": "https://buy.stripe.com/fZubJ16anape0P0eRhdMM1L",
+        "acceptsOnlinePayment": true
+      },
+      "sourceUrl": "https://victoryskating.com/doublejumps"
+    },
+    {
       "id": "double-axel-club-6m",
       "name": "6-Month Double Axel Club",
-      "summary": "Online 6-month double axel training program by Victory Skating Academy (VSA). 48 live group classes, 2 every weekend (Saturday and Sunday), $299 for the whole program.",
-      "description": "A six-month online group program for skaters moving from double jumps to the double axel. Live coaching every weekend covers technique, rotational speed, power and explosiveness, with structured progression across the full six months and a path into triple jumps afterwards.",
+      "summary": "Online 6-month double axel (2A) training by Victory Skating Academy (VSA). 48 live group classes, 2 every weekend (Saturday and Sunday), $299 for the whole program.",
+      "description": "A 6-month online group program from Victory Skating Academy. Figure skaters who have already landed double jumps off-ice and are working toward a double axel, and who want structured coaching toward triple jumps. Live coaching every weekend covers technique, rotational speed, power and explosiveness, with structured progression across the full 6 months.",
       "category": "Figure skating training",
       "price": {
         "amount": 299,
@@ -105,10 +304,10 @@
       ],
       "includes": [
         "48 live group classes over 6 months",
-        "Free 4-day 2Axel Workbook",
-        "$5 discount on private classes",
-        "2 free guest passes for group classes",
-        "Invitation to the Triple Jumps Club at the same flat fee after completion"
+        "2 classes every weekend at 14:00 UTC",
+        "Free 4-day workbook",
+        "Discount on private classes",
+        "2 free guest passes for group classes"
       ],
       "deliveryMode": "online",
       "language": [
@@ -123,6 +322,108 @@
         "Over 800 skaters have landed their double axel with the program, many within 12 weeks"
       ],
       "sourceUrl": "https://victoryskating.com/doubleaxel"
+    },
+    {
+      "id": "triple-jumps-club-6m",
+      "name": "6-Month Triple Jumps Club",
+      "summary": "Online 6-month triple jumps (3S, 3T, 3Lo, 3F, 3Lz) training by Victory Skating Academy (VSA). 48 live group classes, 2 every weekend (Saturday and Sunday), $299 for the whole program.",
+      "description": "A 6-month online group program from Victory Skating Academy. Skaters proficient in triple jumps off-ice who are making the transition to triples. Live coaching every weekend covers technique, rotational speed, power and explosiveness, with structured progression across the full 6 months.",
+      "category": "Figure skating training",
+      "price": {
+        "amount": 299,
+        "currency": "USD",
+        "listAmount": 699
+      },
+      "unitPrice": {
+        "amount": 6,
+        "currency": "USD"
+      },
+      "duration": {
+        "months": 6,
+        "totalSessions": 48,
+        "sessionMinutes": 45,
+        "sessionsPerMonth": 8
+      },
+      "schedule": {
+        "recurrence": {
+          "freq": "WEEKLY",
+          "byDay": [
+            "SA",
+            "SU"
+          ],
+          "startMinutesUtc": 840,
+          "durationMinutes": 45,
+          "firstCohortDate": "2026-10-10",
+          "rollingEnrolment": true
+        },
+        "localTimes": [
+          {
+            "region": "PDT",
+            "timezone": "PDT",
+            "label": "7 - 7.45 am PDT"
+          },
+          {
+            "region": "MDT",
+            "timezone": "MDT",
+            "label": "8 - 8.45 am MDT"
+          },
+          {
+            "region": "CDT",
+            "timezone": "CDT",
+            "label": "9 - 9.45 am CDT"
+          },
+          {
+            "region": "EDT",
+            "timezone": "EDT",
+            "label": "10 - 10.45 am EDT"
+          },
+          {
+            "region": "UK",
+            "timezone": "UK",
+            "label": "3 - 3.45 pm UK"
+          },
+          {
+            "region": "CEST",
+            "timezone": "CEST",
+            "label": "4 - 4.45 pm CEST"
+          },
+          {
+            "region": "ICT",
+            "timezone": "ICT",
+            "label": "9 - 9.45 PM (ICT)"
+          }
+        ]
+      },
+      "instructors": [
+        {
+          "name": "Coach Alice"
+        },
+        {
+          "name": "Coach Lena"
+        }
+      ],
+      "audience": "Skaters proficient in triple jumps off-ice who are making the transition to triples.",
+      "level": "advanced",
+      "prerequisites": [
+        "Proficiency in triple jumps off-ice"
+      ],
+      "includes": [
+        "48 live group classes over 6 months",
+        "2 classes every weekend at 14:00 UTC",
+        "Free 4-day workbook",
+        "Discount on private classes",
+        "2 free guest passes for group classes"
+      ],
+      "deliveryMode": "online",
+      "language": [
+        "en"
+      ],
+      "checkout": {
+        "provider": "stripe",
+        "url": "https://buy.stripe.com/aFa8wP9mz54UbtEgZpdMM1t",
+        "acceptsOnlinePayment": true
+      },
+      "sourceUrl": "https://victoryskating.com/triplejumps"
     }
   ]
 }

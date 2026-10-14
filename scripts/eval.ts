@@ -197,11 +197,16 @@ function print(r: SourceReport) {
 }
 
 async function main() {
-  const after = process.argv[2] ?? "http://localhost:3077/";
+  const base = (process.argv[2] ?? "http://localhost:3077").replace(/\/$/, "");
+  const after = `${base}/programs/double-axel-club-6m`;
   console.log(`Measuring ${FACTS.length} required facts against each source.`);
 
   const before = await inspect("BEFORE — original landing page", ORIGINAL);
-  const now = await inspect("AFTER — AI commerce layer", after, ["/llms.txt", "/api/feed"]);
+  const now = await inspect("AFTER — AI commerce layer", after, [
+    `${base}/programs/double-axel-club-6m/llms.txt`,
+    `${base}/llms.txt`,
+    `${base}/api/feed`,
+  ]);
 
   print(before);
   print(now);

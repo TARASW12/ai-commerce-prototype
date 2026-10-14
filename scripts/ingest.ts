@@ -25,13 +25,17 @@ async function main() {
   const out = join(process.cwd(), "data", "business.json");
   writeFileSync(out, JSON.stringify(profile, null, 2) + "\n");
 
-  const p = profile.programs[0];
-  console.log(`✓ ${profile.brand.name} — ${profile.programs.length} program(s)`);
-  console.log(`  ${p.name}`);
-  console.log(`  $${p.price.amount} (list $${p.price.listAmount}) · ${p.duration.totalSessions} classes · ${p.duration.sessionMinutes} min`);
-  console.log(`  ${p.schedule.recurrence.byDay.join(",")} at ${String(Math.floor(p.schedule.recurrence.startMinutesUtc/60)).padStart(2,"0")}:${String(p.schedule.recurrence.startMinutesUtc%60).padStart(2,"0")} UTC`);
-  console.log(`  first cohort: ${p.schedule.recurrence.firstCohortDate} · rolling: ${p.schedule.recurrence.rollingEnrolment}`);
-  console.log(`  checkout: ${p.checkout.url}`);
+  console.log(`\n✓ ${profile.brand.name} — ${profile.programs.length} program(s)\n`);
+  for (const p of profile.programs) {
+    const r = p.schedule.recurrence;
+    const hhmm = `${String(Math.floor(r.startMinutesUtc / 60)).padStart(2, "0")}:${String(r.startMinutesUtc % 60).padStart(2, "0")}`;
+    console.log(`  ${p.name}  [${p.level}]`);
+    console.log(`    $${p.price.amount} (list $${p.price.listAmount}) · ${p.duration.totalSessions} classes · ${p.duration.sessionMinutes} min`);
+    console.log(`    ${r.byDay.join(",")} at ${hhmm} UTC · ${p.schedule.localTimes.length} local renderings`);
+    console.log(`    coach: ${p.instructors.map((i) => i.name).join(", ")}`);
+    console.log(`    first cohort: ${r.firstCohortDate ?? "—"} · rolling: ${r.rollingEnrolment}`);
+    console.log(`    checkout: ${p.checkout.url}\n`);
+  }
   console.log(`→ ${out}`);
 }
 

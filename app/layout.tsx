@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { profile } from "@/lib/profile";
 
-const program = profile.programs[0];
-
 export const metadata: Metadata = {
-  title: `${program.name} — ${profile.brand.name} (VSA)`,
-  description: program.summary,
+  title: `${profile.brand.name} (VSA) — online figure skating programs`,
+  description: profile.brand.description,
   openGraph: {
-    title: `${program.name} — ${profile.brand.name}`,
-    description: program.summary,
+    title: `${profile.brand.name} (VSA)`,
+    description: profile.brand.description,
     type: "website",
   },
   other: {

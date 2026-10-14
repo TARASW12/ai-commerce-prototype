@@ -7,8 +7,11 @@ import type { BusinessProfile, Program } from "@/adapters/types";
  */
 export const profile = profileJson as unknown as BusinessProfile;
 
+/** The program the assignment is about; also the sensible default. */
+export const FEATURED_ID = "double-axel-club-6m";
+
 export function getProgram(id?: string): Program | undefined {
-  if (!id) return profile.programs[0];
+  if (!id) return profile.programs.find((p) => p.id === FEATURED_ID) ?? profile.programs[0];
   const needle = id.toLowerCase();
   return profile.programs.find(
     (p) =>
@@ -18,15 +21,25 @@ export function getProgram(id?: string): Program | undefined {
 }
 
 /**
- * Keyword search over the facts a buyer actually asks about: the program name,
- * what it teaches, who it is for, and the brand it is sold under.
+ * Keyword search over the facts a buyer actually asks about.
  *
- * Matching the brand aliases matters more than it looks — "VSA" and "Victory
- * Skating" are the same business to a customer, and an assistant that only
- * indexes one of them answers "I could not find it" to half the queries.
+ * Field weighting and phrase matching are both load-bearing here. The naive
+ * version — split into words, score any hit equally — ranks "online double axel
+ * training" against a ladder whose rungs share most of their vocabulary: the
+ * double jumps program's own audience text contains both "double" and "axel"
+ * ("skaters who have landed their axel and are moving on to double jumps"), so
+ * it ties with, and can outrank, the program the user actually asked for.
+ *
+ * Two fixes: a match in the name counts for far more than one in prose, and an
+ * adjacent word pair from the query ("double axel") scores above the sum of its
+ * parts. Brand aliases are matched too, because "VSA" and "Victory Skating" are
+ * the same business to a customer and half the queries use only one of them.
  */
 export function searchPrograms(query: string, maxPrice?: number): Program[] {
-  const words = query.toLowerCase().split(/[^a-z0-9$]+/).filter((w) => w.length > 2);
+  const q = query.toLowerCase();
+  const words = q.split(/[^a-z0-9]+/).filter((w) => w.length > 2);
+  const bigrams = words.slice(0, -1).map((w, i) => `${w} ${words[i + 1]}`);
+
   const brandWords = new Set(
     [profile.brand.name, ...profile.brand.aliases]
       .join(" ")
@@ -34,19 +47,38 @@ export function searchPrograms(query: string, maxPrice?: number): Program[] {
       .split(/\s+/),
   );
 
-  const scored = profile.programs.map((p) => {
-    const haystack = [
-      p.name, p.summary, p.description, p.category,
-      p.audience, p.level, ...p.prerequisites, ...p.includes,
-      ...p.instructors.map((i) => i.name),
-    ].join(" ").toLowerCase();
+  const scored = profile.programs.map((program) => {
+    const name = program.name.toLowerCase();
+    const strong = [program.name, program.summary, program.category]
+      .join(" ")
+      .toLowerCase();
+    const weak = [
+      program.description,
+      program.audience,
+      program.level,
+      ...program.prerequisites,
+      ...program.includes,
+      ...program.instructors.map((i) => i.name),
+    ]
+      .join(" ")
+      .toLowerCase();
 
     let score = 0;
+
+    // A phrase in the title is the strongest signal there is.
+    for (const bg of bigrams) {
+      if (name.includes(bg)) score += 20;
+      else if (strong.includes(bg)) score += 8;
+      else if (weak.includes(bg)) score += 2;
+    }
     for (const w of words) {
-      if (haystack.includes(w)) score += 2;
+      if (name.includes(w)) score += 5;
+      else if (strong.includes(w)) score += 2;
+      else if (weak.includes(w)) score += 1;
       else if (brandWords.has(w)) score += 1;
     }
-    return { program: p, score };
+
+    return { program, score };
   });
 
   return scored

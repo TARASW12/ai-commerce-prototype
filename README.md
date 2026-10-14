@@ -5,7 +5,9 @@ discoverable, understandable and **actionable** for AI assistants — from a
 natural-language request through to a checkout URL.
 
 Source product: <https://victoryskating.com/doubleaxel> (Tilda landing page,
-Stripe payment link).
+Stripe payment link). All four programs in the academy's ladder are ingested,
+not only the one under test — each has its own level, coach, session time and
+checkout link.
 
 ```
 npm install
@@ -87,6 +89,20 @@ that no single protocol covers today.
 
 The two layers share one source of truth, so they cannot drift apart.
 
+### Ranking across a ladder of near-identical products
+
+The four programs share most of their vocabulary, and that breaks naive search
+in a way worth naming. The double jumps program's own audience text reads
+*"skaters who have landed their axel and are moving on to double jumps"* — so a
+query for **"online double axel training"** matches it on both "double" and
+"axel", ties with the program the user actually wants, and can outrank it.
+
+`searchPrograms` fixes this with field weighting (a hit in the program name
+counts for five times one in prose) and bigram matching (the adjacent pair
+"double axel" scores above the sum of its words). This is the kind of failure
+that only appears once a catalogue has more than one product in it, which is
+part of why all four are ingested.
+
 ### Recurrence as a rule, not a date
 
 The single most important modelling decision. `Recurrence` stores
@@ -124,7 +140,10 @@ seven separate sessions. The schedule is stored once, and localised on output.
 | `lib/availability.ts` | Recurrence engine; answers "can I join around X?" |
 | `lib/jsonld.ts` | `Course`, `Product`, `FAQPage` graphs |
 | `lib/profile.ts` | Loading, brand-aware search, enrolment URLs |
-| `app/page.tsx` | AI-readable page: JSON-LD + the same facts as prose |
+| `app/page.tsx` | Catalog: all programs, `EducationalOrganization` + `ItemList` |
+| `app/programs/[id]/page.tsx` | Per-program page: Course + Product + FAQPage JSON-LD |
+| `app/programs/[id]/llms.txt/route.ts` | The same program as markdown |
+| `components/program-view.tsx` | One program rendered for machine readers |
 | `app/llms.txt/route.ts` | Markdown summary for LLM crawlers |
 | `app/robots.txt/route.ts` | Named opt-in for AI crawlers, points at the sitemap |
 | `app/sitemap.xml/route.ts` | The machine-readable surfaces, for discovery |
@@ -203,7 +222,24 @@ belongs on the business's own domain, which is the production recommendation in
 
 ---
 
-## 6. Reuse: what a second business costs
+## 6. A note on the baseline
+
+Organic queries about this product in Perplexity return a largely correct
+answer — but the sources cited are `vsa-ai-gateway.onrender.com`, a third-party
+prototype built for this same assignment and deployed on 2026-10-05, not the
+merchant's own site. The merchant's page is not cited at all.
+
+That contaminates a naive before/after: the "before" looks fine, for reasons
+that have nothing to do with the merchant's page. It is also the clearest
+possible evidence for the thesis — structured data on an unrelated domain
+already outranks an unmarked page for its own product — and it is exactly why
+§7 argues the markup belongs on the business's own domain in production.
+
+Both passes of the measurement therefore pin the source explicitly
+(`Use only <url> as your source`), so the comparison isolates the one variable
+that this work actually changes: the form the facts are in.
+
+## 7. Reuse: what a second business costs
 
 **Everything except the adapter.** The page, `llms.txt`, feed, MCP tools,
 availability engine and checkout route all consume `BusinessProfile` and have
@@ -235,7 +271,7 @@ change — the whole system already reads one `BusinessProfile`.
 
 ---
 
-## 7. What I would change before production
+## 8. What I would change before production
 
 **Put the structured data on the business's own domain.** This is the biggest
 one. A separate domain will never outrank `victoryskating.com` for its own

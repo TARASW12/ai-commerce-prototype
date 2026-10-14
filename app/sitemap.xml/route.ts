@@ -5,16 +5,25 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const origin = requestOrigin();
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = ["/", "/llms.txt", "/api/feed"];
+  const lastmod = profile.source.fetchedAt.slice(0, 10);
+
+  const paths = [
+    "/",
+    "/llms.txt",
+    "/api/feed",
+    ...profile.programs.flatMap((p) => [
+      `/programs/${p.id}`,
+      `/programs/${p.id}/llms.txt`,
+    ]),
+  ];
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls
+${paths
   .map(
     (u) => `  <url>
     <loc>${origin}${u}</loc>
-    <lastmod>${profile.source.fetchedAt.slice(0, 10)}</lastmod>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>daily</changefreq>
   </url>`,
   )
