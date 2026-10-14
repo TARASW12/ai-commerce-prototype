@@ -25,10 +25,11 @@ export default function Page() {
   const availability = checkAvailability(program);
   const rec = program.schedule.recurrence;
 
+  const faq = faqSchema(program, origin);
   const graphs = [
     courseSchema(profile, program, origin),
     productSchema(profile, program, origin),
-    faqSchema(program, origin),
+    faq,
   ];
 
   const facts: [string, string][] = [
@@ -134,7 +135,7 @@ export default function Page() {
       </ul>
 
       <h2 style={{ fontSize: 22, marginTop: 36 }}>Questions</h2>
-      {faqSchema(program, origin).mainEntity.map((q) => (
+      {faq.mainEntity.map((q) => (
         <div key={q.name} style={{ marginBottom: 18 }}>
           <h3 style={{ fontSize: 16, margin: "0 0 4px" }}>{q.name}</h3>
           <p style={{ margin: 0, color: "#c6cbd8" }}>{q.acceptedAnswer.text}</p>

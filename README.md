@@ -126,6 +126,8 @@ seven separate sessions. The schedule is stored once, and localised on output.
 | `lib/profile.ts` | Loading, brand-aware search, enrolment URLs |
 | `app/page.tsx` | AI-readable page: JSON-LD + the same facts as prose |
 | `app/llms.txt/route.ts` | Markdown summary for LLM crawlers |
+| `app/robots.txt/route.ts` | Named opt-in for AI crawlers, points at the sitemap |
+| `app/sitemap.xml/route.ts` | The machine-readable surfaces, for discovery |
 | `app/api/feed/route.ts` | The normalized record as JSON |
 | `app/api/mcp/route.ts` | MCP server (JSON-RPC, Streamable HTTP) |
 | `app/enroll/route.ts` | Action endpoint → Stripe, with AI attribution |
@@ -266,6 +268,13 @@ tools. The questions assistants ask before a purchase are the most direct
 signal available for what the product data is missing — that feedback loop is
 the point of the business-data layer, and this prototype only sets up the
 plumbing for it.
+
+**Automated grading of the answers themselves.** `npm run eval` measures what
+is *retrievable* — a structural property, which is why it is deterministic and
+free. It does not measure what an assistant actually says. The next step is a
+graded run: put each source in front of a model, ask the brief's five queries,
+and score the answers against known values. That costs money per run and needs
+its own rubric, so it belongs in CI rather than in a prototype.
 
 **Tests.** The recurrence engine deserves real coverage — month boundaries,
 DST, timezone edges — and the adapter needs a golden-file test against a

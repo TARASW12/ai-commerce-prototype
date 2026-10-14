@@ -6,9 +6,8 @@
  * many can an AI client actually retrieve from each source, and how many are
  * stated unambiguously rather than left to be inferred from marketing prose.
  *
- * Deterministic by default — no API key, no cost, same number every run, so a
- * reviewer can reproduce it. Set ANTHROPIC_API_KEY to additionally have a model
- * answer the brief's five queries from each source and grade itself.
+ * Deterministic — no API key, no cost, same number every run, so a reviewer can
+ * reproduce it rather than take a screenshot's word for it.
  *
  *   npx tsx scripts/eval.ts                       # original vs local build
  *   npx tsx scripts/eval.ts https://my.vercel.app # original vs deployed
@@ -213,13 +212,6 @@ async function main() {
   console.log(`unambiguous   ${before.structured.length}/${t}  →  ${now.structured.length}/${t}`);
   console.log(`JSON-LD       ${before.jsonLdGraphs}  →  ${now.jsonLdGraphs}`);
   console.log("─".repeat(62));
-
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.log(
-      "\nSet ANTHROPIC_API_KEY to also have a model answer the brief's five\n" +
-        "queries from each source and grade its own answers.",
-    );
-  }
 }
 
 main().catch((e) => {
