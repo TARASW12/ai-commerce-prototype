@@ -9,7 +9,8 @@
     "start": "next start",
     "ingest": "tsx scripts/ingest.ts",
     "eval": "tsx scripts/eval.ts",
-    "indexnow": "tsx scripts/indexnow.ts"
+    "indexnow": "tsx scripts/indexnow.ts",
+    "demo": "tsx scripts/demo.ts"
   },
   "dependencies": {
     "next": "14.2.15",

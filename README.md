@@ -9,12 +9,19 @@ Stripe payment link). All four programs in the academy's ladder are ingested,
 not only the one under test — each has its own level, coach, session time and
 checkout link.
 
+Live: <https://ai-commerce-prototype.vercel.app>
+
 ```
 npm install
-npm run ingest     # run the adapter against the live page
-npm run build && npm start
+npm run ingest     # run the adapter against the live pages
+npm run demo       # the sales scenario, end to end, against production
 npm run eval       # before/after measurement
+npm run build && npm start
 ```
+
+`npm run demo` is the fastest way to see the point of the whole thing: a
+natural-language request with a budget, a date the user names, and a checkout
+URL at the end — three live JSON-RPC calls to the deployed MCP server.
 
 ---
 
@@ -150,6 +157,7 @@ seven separate sessions. The schedule is stored once, and localised on output.
 | `app/api/feed/route.ts` | The normalized record as JSON |
 | `app/api/mcp/route.ts` | MCP server (JSON-RPC, Streamable HTTP) |
 | `app/enroll/route.ts` | Action endpoint → Stripe, with AI attribution |
+| `scripts/demo.ts` | Walks the sales scenario through MCP and prints the transcript |
 | `scripts/eval.ts` | Before/after measurement |
 | `scripts/indexnow.ts` | Submits every URL to IndexNow on deploy |
 
