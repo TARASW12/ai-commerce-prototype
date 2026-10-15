@@ -44,7 +44,9 @@ same pinning, and a side-by-side comparison table.
 produces "$299 for the whole program" — and **`after/q5.png`**, where "can I
 join?" finally gets an answer about *joining* rather than about eligibility.
 
-## The two findings that are not in the brief
+## Findings beyond the brief
+
+`4-findings/` holds three screenshots and the write-up behind them.
 
 **[`indexing-note.md`](indexing-note.md)** — on deployment day Perplexity could
 not read the prototype at all, and silently substituted a competing prototype's
@@ -53,12 +55,8 @@ four fixes were applied; the site was indexed within a day. This is the
 strongest argument in the submission for putting the markup on the merchant's
 own domain in production.
 
-- `after/00-could-not-load.png`, `after/00-indexing-limitation.png`
-- `after/00-attributes-competitor-content.png` — the engine attributing one
-  site's content to another site's URL, with confident citations
-
-**Retrieval is not reliable.** Query 3 failed three times with `Use only`
-before succeeding with `Use` (`after/q3-transient-fetch-failure*.png`), while
-the page served HTTP 200 in ~0.15 s throughout. The unpinned form of the same
-query answers readily but mixes in a competitor's facts
-(`after/q3-unpinned-contaminated.png`), which is why it is not used as evidence.
+**Retrieval is not reliable even once indexed.** Query 3 failed three times
+with `Use only` before succeeding with `Use`, while the page served HTTP 200 in
+~0.15 s throughout. The unpinned form of the same query answers readily but
+mixes in a rival prototype's facts, which is why it is not used as evidence.
+Both are written up in `indexing-note.md`.
