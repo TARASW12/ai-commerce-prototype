@@ -78,8 +78,7 @@ URL failed to load twice"* — while the page served HTTP 200 in ~0.15 s to a
 The same query with no URL at all answers readily, but half its facts come from
 the rival prototype: "auto-renews until cancelled", "via Zoom", "pause two days
 before billing". None of those appear on the page under test, which is why that
-form is not used as evidence anywhere — see
-`07-unpinned-query-mixes-in-a-rivals-facts.png`.
+form is not used as evidence anywhere in this submission.
 
 Two conclusions, and they outlast the inconvenience:
 

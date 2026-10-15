@@ -99,8 +99,10 @@ production, rather than hosting it beside the business.
 
 ## Screenshots
 
-- `before-organic/` — pass A, one file per query: `q1.png` … `q6.png`
-- `before-withurl/` — pass B, same naming
+`1-before/01…06` — one file per query, in the order of the table above. Each
+includes the **Sources** panel, so it is visible which pages the engine actually
+read.
 
-Each screenshot must include the **sources block** under the answer, so it is
-visible which pages the engine actually read.
+The unpinned pass is not kept per-query; the one screenshot that matters from it
+is `4-findings/02-merchant-page-is-outranked-by-a-rival-prototype.png`, for the
+reason described in the previous section.

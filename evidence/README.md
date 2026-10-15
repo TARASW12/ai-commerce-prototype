@@ -1,62 +1,61 @@
 # Evidence
 
 Everything measured for this assignment, in the order the brief asks for it.
+Folders `1-before` and `2-after` are deliberately symmetric: the same six
+questions, same numbering, so any pair can be opened side by side.
 
 ## Section 1 — Before / baseline
 
-**[`baseline.md`](baseline.md)** — the six questions, run twice each, with a
-per-query table and the six distinct failures they exposed.
+`1-before/` — the six questions from the brief, verbatim, each in a fresh
+Perplexity thread, with the source pinned to the merchant's page.
+`1-before/NOTES.md` has the per-query table and the six distinct failures.
 
-- `before-withurl/q1.png` … `q6.png` — the baseline proper: each question with
-  the source pinned to the merchant's page
-- `before-organic/q1-organic-sources.png` — the same question with no source
-  restriction, which turns out to answer from a **third party's** prototype
-  rather than the merchant's site
-
-**Start with `before-withurl/q2.png`.** It is the baseline's worst failure: the
-engine states the price as **$699** — the struck-through list price — for a
-program that costs $299.
+**Open `02-q2-PRICE-ERROR-says-699.png` first.** It is the baseline's worst
+result: the engine reports the price as **$699** — the struck-through list
+price — for a program that costs $299. Then `05-q5-can-i-join-NO-ACTION.png`,
+where a user asking literally "can I join?" is told about the required skill
+level and never how to join.
 
 ## Section 2 — Build
 
-Code is the repository. `README.md` has the architecture; `npm run eval`
-reproduces the measurement without an API key.
+The code is the repository; `README.md` there has the architecture. The
+measurement is reproducible without an API key:
 
-- `after/page-rendered.png` — what the discovery layer actually serves
+```
+npm run eval    # 0/13 → 13/13 machine-readable facts
+npm run demo    # the sales scenario, end to end
+```
 
 ## Section 3 — Sales / enrolment flow
 
-**[`agent/README.md`](agent/README.md)** — the scenario, step by step.
-
-- `agent/mcp-sales-flow.png` — the three MCP calls and the redirect to the
-  merchant's Stripe checkout. Reproduce with `npm run demo`.
+`3-agent/` — the brief's scenario run against the deployed MCP server: a
+natural-language request with a budget, a date the user names, and a checkout
+URL that redirects to the merchant's own Stripe. Three live JSON-RPC calls.
+`3-agent/NOTES.md` walks through each step.
 
 ## Section 4 — After / proof
 
-**[`after-results.md`](after-results.md)** — same six questions, same engine,
-same pinning, and a side-by-side comparison table.
+`2-after/` — the same six questions, same engine, same pinning, different page.
+`2-after/NOTES.md` has the per-query table and the side-by-side comparison.
 
-- `after/q1.png` … `q6.png` — the after pass
-- `after/00-indexed-confirmation.png` — Perplexity reading the prototype,
-  including all four programs and the machine-readable endpoints
-
-**Start with `after/q2.png`** — the same question that produced $699 above now
-produces "$299 for the whole program" — and **`after/q5.png`**, where "can I
-join?" finally gets an answer about *joining* rather than about eligibility.
+**The two that matter:** `02-q2-PRICE-FIXED-says-299.png`, the same question
+that produced $699 above, and `05-q5-can-i-join-WITH-ACTION.png`, where "can I
+join?" finally gets an answer about joining.
 
 ## Findings beyond the brief
 
-`4-findings/` holds three screenshots and the write-up behind them.
+`4-findings/` — three screenshots and the write-up behind them.
 
-**[`indexing-note.md`](indexing-note.md)** — on deployment day Perplexity could
-not read the prototype at all, and silently substituted a competing prototype's
-content for the requested URL. Eight checks ruled out every hosting-side cause;
-four fixes were applied; the site was indexed within a day. This is the
-strongest argument in the submission for putting the markup on the merchant's
-own domain in production.
+`02-merchant-page-is-outranked-by-a-rival-prototype.png` is the one worth your
+time. Asked about this product without a source restriction, Perplexity answers
+from `vsa-ai-gateway.onrender.com` — a third-party prototype built for this same
+assignment, live since 5 October — and cites victoryskating.com for nothing
+specific at all. Structured data on an unrelated domain already outranks the
+merchant's own page for the merchant's own product. That is the clearest
+argument for injecting this markup into the merchant's site in production rather
+than hosting it alongside, which is what section 8 of the repository README
+recommends.
 
-**Retrieval is not reliable even once indexed.** Query 3 failed three times
-with `Use only` before succeeding with `Use`, while the page served HTTP 200 in
-~0.15 s throughout. The unpinned form of the same query answers readily but
-mixes in a rival prototype's facts, which is why it is not used as evidence.
-Both are written up in `indexing-note.md`.
+`NOTES.md` there covers the rest: how the engine behaved on deployment day, the
+eight checks that ruled out every hosting-side cause, the four fixes, and why
+retrieval stays unreliable even once a page is indexed.
